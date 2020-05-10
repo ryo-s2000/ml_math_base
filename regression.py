@@ -25,10 +25,6 @@ def standardize(x):
 
 train_z = standardize(train_x)
 
-# グラフ表示
-# plt.plot(train_z, train_y, 'o')
-# plt.show()
-
 # 学習率
 ETA = 1e-3
 

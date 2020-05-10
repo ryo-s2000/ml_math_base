@@ -19,9 +19,11 @@ def to_matrix(x):
     return np.vstack([np.ones(x.shape[0]), x, x ** 2]).T
 
 X = to_matrix(train_z)
+print(X)
 
 # パラメータ
 theta = np.random.rand(3)
+print(theta)
 
 def f(x):
     return np.dot(x, theta)
@@ -29,19 +31,25 @@ def f(x):
 def E(x,y):
     return 0.5 * np.sum((y - f(x)) ** 2)
 
+def EMS(x, y):
+    return (1/ x.shape[0]) * np.sum((y - f(x)) ** 2)
+
+# エラー
+errors = []
+
 # 学習率
 ETA = 1e-3
 
 # 誤差の差分
 diff = 1
 
-error = E(X, train_y)
+errors.append(EMS(X, train_y))
 while diff > 1e-2:
-    theta = theta - ETA * np.dot(f(X) - train_y, X)
-
-    current_error = E(X, train_y)
-    diff = error - current_error
-    error = current_error
+    p = np.random.permutation(X.shape[0])
+    for x, y in zip(X[p, :], train_y[p]):
+        theta = theta - ETA * (f(x) - y) * x
+    errors.append(EMS(X, train_y))
+    diff = errors[-2] - errors[-1]
 
 x = np.linspace(-3, 3, 100)
 plt.plot(train_z, train_y, 'o')
